@@ -1,0 +1,6 @@
+#+title: Post
+#+hugo_base_dir: ~/Sync/code/sites/blog-source
+#+hugo_section: posts
+#+hugo_url: /post.html
+#+hugo_auto_set_lastmod: t
+

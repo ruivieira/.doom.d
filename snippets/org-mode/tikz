@@ -1,0 +1,14 @@
+#key : <tikz
+#name : org-babel tikz block
+#contributor: Rui Vieira <ruidevieira@googlemail.com>
+# --
+#+name: name
+#+header: :results file drawer
+#+header: :file filename.png
+#+header: :imagemagick yes
+#+header: :headers '("\\\\usepackage{tikz}" "\\\\usetikzlibrary{shadows.blur,shapes.symbols,arrows.meta,matrix,positioning}" "\\\\tikzset{>={Latex[width=1.5mm,length=1.5mm]}}" "\\\\input{tikz-macros.tex}")
+#+header: :fit yes :imoutoptions -geometry 1200 :iminoptions -density 900
+#+begin_src latex :exports results
+$0
+#+end_src
+

@@ -1,0 +1,7 @@
+#key : <srcplantuml
+#name : PlantUML org-babel source block
+#contributor: Rui Vieira <ruidevieira@googlemail.com>
+# --
+#+begin_src plantuml :file name.png
+$0
+#+end_src

@@ -1,0 +1,15 @@
+#+title: FAI-
+
+* BACKLOG Merge this PR
+** REVIEW Review this PR
+*** BACKLOG Push this PR
+
+* Summary
+  PR link: [[https://github.com/GROUP/PROJECT/pull/NUMBER][ISSUE]]
+  JIRA link: [[https://issues.redhat.com/ISSUE][Title]]
+
+  Write summary here
+
+* Tasks
+
+Add tasks here
