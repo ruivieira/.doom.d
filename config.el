@@ -19,18 +19,19 @@
 ;;
 ;; They all accept either a font-spec, font string ("Input Mono-12"), or xlfd
 ;; font string. You generally only need these two:
-(setq doom-font (font-spec :family "JetBrains Mono" :size 14 :weight 'regular))
+(setq doom-font (font-spec :family "Hack" :size 14 :weight 'regular))
 
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
 ;; (setq doom-theme 'doom-one)
 ;; (setq doom-theme 'acme)
-(setq doom-theme 'doom-sourcerer)
+;; (setq doom-theme 'doom-sourcerer)
 ;; (setq doom-theme 'doom-flatwhite)
 ;; (setq doom-theme 'doom-one-light)
 ;; (setq doom-theme 'doom-solarized-light)
 ;; (setq doom-theme 'doom-acario-dark)
+(setq doom-theme 'tango-plus)
 
 ;; tree-sitter
 (use-package! tree-sitter
@@ -74,8 +75,8 @@
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
 
-;; start full-screen
-(add-to-list 'initial-frame-alist '(fullscreen . maximized))
+;; Uncomment to enable fullscreen start
+;; (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 
 (after! f
   (setq org-agenda-files
@@ -168,13 +169,13 @@
 
  (setq org-roam-directory "~/Sync/notes/pages/"))
 
-(after! org-src
- (dolist (lang '(python typescript jupyter))
- (cl-pushnew (cons (format "jupyter-%s" lang) lang)
-                org-src-lang-modes :key #'car))
+;;(after! org-src
+;; (dolist (lang '(python typescript jupyter))
+;; (cl-pushnew (cons (format "jupyter-%s" lang) lang)
+;;                org-src-lang-modes :key #'car))
   ;; (org-babel-jupyter-override-src-block "python") ;; alias all python to jupyter-python
   ;; (org-babel-jupyter-override-src-block "typescript") ;; alias all python to jupyter-python
- )
+;; )
 
 (add-hook 'typescript-mode-hook 'deno-fmt-mode)
 (add-hook 'js2-mode-hook 'deno-fmt-mode)
@@ -264,21 +265,25 @@
 ;; Special glyphs for org-babel blocks
 (defun my/pretty-symbols ()
   (setq prettify-symbols-alist
-          '(("lambda" . 955)
-            ("->" . 8594)
-            ("=>" . 8658)
-            ("map" . 8614)
-            ("<=" . 8804)
-            (">=" . 8805)
-            ("<-" . 8592)
-            ("#+begin_src python" . "🐍")
-            ("#+begin_src jupyter-python" . "🐍")
+          '(("#+begin_src python" . "🐍")
+            ("#+begin_src elisp" . "λ")
+            ("#+begin_src shell" . "🐚")
+            ("#+begin_src jupyter-python" . "🪐🐍")
             ("#+end_src" . "―")
             ("#+results:" . "🔨")
-            ("#+RESULTS:" . "🔨")
-            ("!=" . 8800))))
+            ("#+RESULTS:" . "🔨"))))
+
 (add-hook 'clojure-mode-hook 'my/pretty-symbols)
 (add-hook 'racket-mode-hook 'my/pretty-symbols)
 (add-hook 'ess-mode-hook 'my/pretty-symbols)
 (add-hook 'org-mode-hook 'my/pretty-symbols)
 (global-prettify-symbols-mode +1)
+
+(use-package humble)
+(use-package quarkus)
+(use-package kogito)
+;; (use-package eglot-java)
+
+;; The important stuff
+
+(blink-cursor-mode 1)                   ; A cursor should blink
