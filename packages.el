@@ -11,6 +11,8 @@
 ;; Themes
 (package! acme-theme)
 (package! doom-themes)
+(package! tango-plus-theme)
+;; general org-mode packages
 (package! org-super-agenda)
 (package! org-sidebar)
 ;; org-babel packages
@@ -22,6 +24,8 @@
 ;; Extra Python packages
 (package! python-black)
 (package! deno-fmt)
+
+;; (unpin! org-roam)
 
 ;; Utilities
 (package! f)
@@ -48,9 +52,24 @@
   :recipe (:host github :repo "ruivieira/elisp"
            :files ("humble.el")))
 
+(package! quarkus
+  :recipe (:host github :repo "ruivieira/elisp"
+           :files ("quarkus.el")))
+
+(package! kogito
+  :recipe (:host github :repo "ruivieira/elisp"
+           :files ("kogito.el")))
+
+(package! eglot-java
+  :recipe (:host github :repo "emacs-vault/eglot-java"
+           :files ("eglot-java.el")))
+
 ;; tree-sitter support
 (package! tree-sitter)
 (package! tree-sitter-langs)
+
+;; SQLite (and other DBs) support
+(package! sqlite)
 
 ;; If you'd like to disable a package included with Doom, you can do so here
 ;; with the `:disable' property:
