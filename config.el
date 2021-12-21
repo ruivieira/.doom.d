@@ -165,6 +165,7 @@
     (deno . t)
     (go . t)
     (crystal . t)
+    (zig . t)
     (jupyter . t)))
 
  (setq org-roam-directory "~/Sync/notes/pages/"))
@@ -282,6 +283,8 @@
 (use-package humble)
 (use-package quarkus)
 (use-package kogito)
+(use-package ob-zig)
+
 ;; (use-package eglot-java)
 
 ;; The important stuff

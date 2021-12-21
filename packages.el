@@ -47,6 +47,11 @@
 
 ;; org-babel special modes
 (package! ob-crystal)
+(package! ob-zig
+  :recipe (:host github :repo "jolby/ob-zig.el"
+           :files ("*.el")))
+
+;; Personal experimental packages
 
 (package! humble
   :recipe (:host github :repo "ruivieira/elisp"
