@@ -19,7 +19,7 @@
 ;;
 ;; They all accept either a font-spec, font string ("Input Mono-12"), or xlfd
 ;; font string. You generally only need these two:
-(setq doom-font (font-spec :family "Hack" :size 14 :weight 'regular))
+(setq doom-font (font-spec :family "Ubuntu Mono" :size 16 :weight 'regular))
 
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
@@ -31,7 +31,8 @@
 ;; (setq doom-theme 'doom-one-light)
 ;; (setq doom-theme 'doom-solarized-light)
 ;; (setq doom-theme 'doom-acario-dark)
-(setq doom-theme 'tango-plus)
+;; (setq doom-theme 'tango-plus)
+(setq doom-theme 'doom-Iosvkem)
 
 ;; tree-sitter
 (use-package! tree-sitter
@@ -269,7 +270,8 @@
           '(("#+begin_src python" . "🐍")
             ("#+begin_src elisp" . "λ")
             ("#+begin_src shell" . "🐚")
-            ("#+begin_src jupyter-python" . "🪐🐍")
+            ("#+begin_src jupyter-python" . "🪐 🐍")
+            ("#+begin_src jupyter-java" . "🪐 ☕")
             ("#+end_src" . "―")
             ("#+results:" . "🔨")
             ("#+RESULTS:" . "🔨"))))
@@ -287,6 +289,15 @@
 
 ;; (use-package eglot-java)
 
-;; The important stuff
 
+;; UI-related configurations
+;;
+;;; The important stuff
 (blink-cursor-mode 1)                   ; A cursor should blink
+
+;;; global beacon minor-mode
+(use-package! beacon)
+(after! beacon (beacon-mode 1))
+
+;;; Focus package
+(use-package! focus)

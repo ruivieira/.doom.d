@@ -8,7 +8,10 @@
 
 ;; To install SOME-PACKAGE from MELPA, ELPA or emacsmirror:
 ;(package! some-package)
-;; Themes
+
+;; UI-related packages
+;;
+;;; Themes
 (package! acme-theme)
 (package! doom-themes)
 (package! tango-plus-theme)
@@ -25,6 +28,9 @@
 (package! python-black)
 (package! deno-fmt)
 
+;;; Editing
+(package! beacon)
+(package! focus)
 ;; (unpin! org-roam)
 
 ;; Utilities
@@ -41,6 +47,9 @@
 ;(package! this-package
 ;  :recipe (:host github :repo "username/repo"
 ;           :files ("some-file.el" "src/lisp/*.el")))
+
+;; org-mode related packages
+;;
 (package! org-extras
   :recipe (:host github :repo "ruivieira/elisp"
            :files ("org-extras.el")))
