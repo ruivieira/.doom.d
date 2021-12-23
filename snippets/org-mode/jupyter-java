@@ -1,0 +1,7 @@
+#key : <srcjj
+#name : emacs-jupyter Java org-babel source block
+#contributor: Rui Vieira <ruidevieira@googlemail.com>
+# --
+#+begin_src jupyter-java :session java :kernel java
+$0
+#+end_src

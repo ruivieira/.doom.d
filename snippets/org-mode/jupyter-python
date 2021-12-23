@@ -1,0 +1,7 @@
+#key : <srcjp
+#name : emacs-jupyter Python org-babel source block
+#contributor: Rui Vieira <ruidevieira@googlemail.com>
+# --
+#+begin_src jupyter-python :session py :kernel blog
+$0
+#+end_src
