@@ -19,7 +19,7 @@
 ;;
 ;; They all accept either a font-spec, font string ("Input Mono-12"), or xlfd
 ;; font string. You generally only need these two:
-(setq doom-font (font-spec :family "Ubuntu Mono" :size 16 :weight 'regular))
+(setq doom-font (font-spec :family "Hera" :size 16 :weight 'regular))
 
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
@@ -301,3 +301,9 @@
 
 ;;; Focus package
 (use-package! focus)
+
+;;; set default indent
+(setq-default tab-width 4)
+
+;; System
+(use-package! load-env-vars)
