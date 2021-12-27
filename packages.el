@@ -15,6 +15,7 @@
 (package! acme-theme)
 (package! doom-themes)
 (package! tango-plus-theme)
+(package! uwu-theme :recipe (:host github :repo "kborling/uwu.el"))
 ;; general org-mode packages
 (package! org-super-agenda)
 (package! org-sidebar)

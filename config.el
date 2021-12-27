@@ -19,7 +19,7 @@
 ;;
 ;; They all accept either a font-spec, font string ("Input Mono-12"), or xlfd
 ;; font string. You generally only need these two:
-(setq doom-font (font-spec :family "Hera" :size 16 :weight 'regular))
+(setq doom-font (font-spec :family "Hera" :size 14 :weight 'regular))
 
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
@@ -32,7 +32,9 @@
 ;; (setq doom-theme 'doom-solarized-light)
 ;; (setq doom-theme 'doom-acario-dark)
 ;; (setq doom-theme 'tango-plus)
-(setq doom-theme 'doom-Iosvkem)
+;; (setq doom-theme 'doom-Iosvkem)
+(require 'uwu-theme)
+(load-theme 'uwu t)
 
 ;; tree-sitter
 (use-package! tree-sitter
@@ -307,3 +309,6 @@
 
 ;; System
 (use-package! load-env-vars)
+
+;; enable rainbow mode for lua
+(add-hook 'lua-mode-hook #'rainbow-mode)
