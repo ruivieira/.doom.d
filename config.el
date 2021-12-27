@@ -296,7 +296,7 @@
 ;;
 ;;; The important stuff
 (blink-cursor-mode 1)                   ; A cursor should blink
-
+(use-package! dirvish)
 ;;; global beacon minor-mode
 (use-package! beacon)
 (after! beacon (beacon-mode 1))
