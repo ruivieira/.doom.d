@@ -19,22 +19,22 @@
 ;;
 ;; They all accept either a font-spec, font string ("Input Mono-12"), or xlfd
 ;; font string. You generally only need these two:
-(setq doom-font (font-spec :family "Hera" :size 14 :weight 'regular))
+(setq doom-font (font-spec :family "Hera" :size 16 :weight 'regular))
 
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
 ;; (setq doom-theme 'doom-one)
 ;; (setq doom-theme 'acme)
-;; (setq doom-theme 'doom-sourcerer)
+(setq doom-theme 'doom-sourcerer)
 ;; (setq doom-theme 'doom-flatwhite)
 ;; (setq doom-theme 'doom-one-light)
 ;; (setq doom-theme 'doom-solarized-light)
 ;; (setq doom-theme 'doom-acario-dark)
 ;; (setq doom-theme 'tango-plus)
 ;; (setq doom-theme 'doom-Iosvkem)
-(require 'uwu-theme)
-(load-theme 'uwu t)
+;; (require 'uwu-theme)
+;; (load-theme 'uwu t)
 
 ;; tree-sitter
 (use-package! tree-sitter
@@ -157,6 +157,7 @@
  (setq org-confirm-babel-evaluate nil)  ;; skip org-babel confirmation dialog
  (add-hook 'org-babel-after-execute-hook 'org-redisplay-inline-images)
  (setq org-preview-latex-default-process 'imagemagick)
+ (setq org-babel-clojure-backend 'cider) ;; set backend for org-babel clojure blocks
  (org-babel-do-load-languages
   'org-babel-load-languages
   '(
@@ -169,6 +170,7 @@
     (go . t)
     (crystal . t)
     (zig . t)
+    (clojure . t)
     (jupyter . t)))
 
  (setq org-roam-directory "~/Sync/notes/pages/"))
@@ -271,6 +273,7 @@
   (setq prettify-symbols-alist
           '(("#+begin_src python" . "🐍")
             ("#+begin_src elisp" . "λ")
+            ("#+begin_src clojure" . "λ")
             ("#+begin_src shell" . "🐚")
             ("#+begin_src jupyter-python" . "🪐 🐍")
             ("#+begin_src jupyter-java" . "🪐 ☕")
@@ -296,6 +299,7 @@
 ;;
 ;;; The important stuff
 (blink-cursor-mode 1)                   ; A cursor should blink
+(scroll-bar-mode 1)
 (use-package! dirvish)
 ;;; global beacon minor-mode
 (use-package! beacon)
