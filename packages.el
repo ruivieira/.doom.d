@@ -16,12 +16,14 @@
 (package! doom-themes)
 (package! tango-plus-theme)
 (package! uwu-theme :recipe (:host github :repo "kborling/uwu.el"))
+(package! spacemacs-theme)
 ;; general org-mode packages
 (package! org-super-agenda)
 (package! org-sidebar)
 ;; org-babel packages
 (package! ob-deno)
 (package! ob-go)
+(package! ob-ammonite)
 (package! ivy-bibtex)
 (package! org-ref)
 (package! citeproc-org)
@@ -60,7 +62,7 @@
 (package! ob-zig
   :recipe (:host github :repo "jolby/ob-zig.el"
            :files ("*.el")))
-
+(package! org-bullets)
 ;; Personal experimental packages
 
 (package! humble
