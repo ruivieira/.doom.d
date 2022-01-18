@@ -122,7 +122,8 @@
               ("wo" "Open tickets" (
                                     (org-ql-block '(and
                                                     (property "type" "JIRA")
-                                                    (todo)))
+                                                    (or (todo) (todo "LATER") (todo "WORK"))
+                                                    ))
                                     ))
               ("wa" "Agenda and work tasks" (
                                              (agenda "")
