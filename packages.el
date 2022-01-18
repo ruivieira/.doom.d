@@ -20,6 +20,7 @@
 ;; general org-mode packages
 (package! org-super-agenda)
 (package! org-sidebar)
+(package! org-ql)
 ;; org-babel packages
 (package! ob-deno)
 (package! ob-go)
@@ -27,6 +28,7 @@
 (package! ivy-bibtex)
 (package! org-ref)
 (package! citeproc-org)
+(package! pikchr-mode)
 ;; Extra Python packages
 (package! python-black)
 (package! deno-fmt)

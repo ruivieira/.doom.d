@@ -19,7 +19,8 @@
 ;;
 ;; They all accept either a font-spec, font string ("Input Mono-12"), or xlfd
 ;; font string. You generally only need these two:
-(setq doom-font (font-spec :family "Hera" :size 16 :weight 'regular))
+(setq doom-font (font-spec :family "Hera" :size 15 :weight 'regular))
+(setq doom-variable-pitch-font (font-spec :family "ETBembo" :size 17 :weight 'regular))
 
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
@@ -35,7 +36,8 @@
 ;; (setq doom-theme 'doom-Iosvkem)
 ;; (require 'uwu-theme)
 ;; (load-theme 'uwu t)
-(setq doom-theme 'spacemacs-light)
+;; (setq doom-theme 'spacemacs-light)
+(setq doom-theme 'modus-operandi)
 
 ;; tree-sitter
 (use-package! tree-sitter
@@ -115,18 +117,25 @@
             (sequence "MEETING" "|" "MET" "CANCELED")))
       (setq org-agenda-custom-commands
             '(("l" todo "LATER")
-            ("j" "Agenda and work tasks" (
-                                          (agenda "")
-                                          (todo "BACKLOG") (todo "INPROGRESS")
-                                          (todo "WORK")
-                                          (todo "REVIEW")))
-            ("h" "Work (on hold): agend and tasks" (
+
+              ;; work commands
+              ("wo" "Open tickets" (
+                                    (org-ql-block '(and
+                                                    (property "type" "JIRA")
+                                                    (todo)))
+                                    ))
+              ("wa" "Agenda and work tasks" (
+                                             (agenda "")
+                                             (todo "BACKLOG") (todo "INPROGRESS")
+                                             (todo "WORK")
+                                             (todo "REVIEW")))
+              ("wh" "Work (on hold): agend and tasks" (
                                                     (agenda "" ((todo "ONHOLD") (todo "INREVIEW")))
                                                     (todo "ONHOLD") (todo "INREVIEW")))
-            ("m" "Work: agenda and meetings" (
+              ("wm" "Work: agenda and meetings" (
                                               (agenda "" ((todo "MEETING")))
                                               (todo "MEETING")))
-            ("w" "Work tasks and meetings" (
+              ("ww" "Work tasks and meetings" (
                                             (agenda "" ((org-agenda-span 14)
                                                         (todo "MEETING")
                                                         (todo "REVIEW")
@@ -138,7 +147,6 @@
                                     (todo "BACKLOG")
                                     (todo "WORK")
                                     (tags "+work")))
-    ("tw" tags-todo "+work")
     ("s" "Shopping: agenda and tasks" (
                                        (agenda "" ((todo "SHOP")))
                                        (todo "SHOP")))
@@ -180,9 +188,12 @@
     (zig . t)
     (clojure . t)
     (scala . t)
+    (pikchr . t)
     (jupyter . t)))
 
  (setq org-roam-directory "~/Sync/notes/pages/")
+
+ (use-package! org-ql)
 
  ;; org-mode styling
  (setq org-hide-emphasis-markers t)
@@ -214,8 +225,8 @@
 
    (custom-theme-set-faces
     'user
-    '(variable-pitch ((t (:family "ETBembo" :height 180 :weight thin))))
-    '(fixed-pitch ((t ( :family "Hack" :height 160)))))
+    '(variable-pitch ((t (:family "ETBembo" :height 170 :weight thin))))
+    '(fixed-pitch ((t ( :family "Hack" :height 150)))))
 
    (add-hook 'org-mode-hook 'variable-pitch-mode)
    (add-hook 'org-mode-hook 'visual-line-mode)
@@ -340,6 +351,7 @@
             ("#+begin_src elisp" . "λ")
             ("#+begin_src clojure" . "λ")
             ("#+begin_src shell" . "🐚")
+            ("#+begin_src amm" . "🍄")
             ("#+begin_src jupyter-python" . "🪐 🐍")
             ("#+begin_src jupyter-java" . "🪐 ☕")
             ("#+end_src" . "―")
