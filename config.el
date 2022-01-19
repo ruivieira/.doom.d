@@ -408,6 +408,10 @@
 (blink-cursor-mode 1)                   ; A cursor should blink
 (scroll-bar-mode 1)
 
+;;; Keybindings
+
+;;;; Disable Alt in order to use hash and euro
+(global-set-key (kbd "M-3") '(lambda () (interactive) (insert "#")))
 
 ;; Make the modeline font smaller
 (setq doom-modeline-height 1)
