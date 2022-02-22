@@ -92,9 +92,6 @@
 
 ;; Python configuration
 (setq python-shell-completion-native-enable nil)
-(use-package! python-black
-  :after python
-  :hook (python-mode . python-black-on-save-mode-enable-dwim))
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
