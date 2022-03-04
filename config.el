@@ -366,7 +366,7 @@
 (use-package quarkus)
 (use-package kogito)
 (use-package ob-zig)
-
+(use-package deadgrep)
 
 (use-package ob-ammonite
   :defer 1
