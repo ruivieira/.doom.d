@@ -21,6 +21,7 @@
 (package! org-super-agenda)
 (package! org-sidebar)
 (package! org-ql)
+(package! org-modern)
 ;; org-babel packages
 (package! ob-deno)
 (package! ob-go)

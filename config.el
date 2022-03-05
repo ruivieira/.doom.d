@@ -103,8 +103,12 @@
   :config
     (load! "lisp/ob-scala"))
 
+;; org-mode general configuration
+
+(use-package org-modern)
 
 (after! org
+  (add-hook 'org-mode-hook #'org-modern-mode)
       (setq org-todo-keywords
             '((sequence "IDEA" "TODO" "LATER" "DOING" "|" "DONE" "CANCELED")
             (sequence "BACKLOG" "INPROGRESS" "ONHOLD" "INREVIEW" "|" "MERGED" "CANCELED")
