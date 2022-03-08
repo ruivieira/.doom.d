@@ -109,6 +109,10 @@
 
 (after! org
   (add-hook 'org-mode-hook #'org-modern-mode)
+  ;; disable auto-complete in org-mode buffers
+  (remove-hook 'org-mode-hook #'auto-fill-mode)
+  ;; disable company too
+  (setq company-global-modes '(not org-mode))
       (setq org-todo-keywords
             '((sequence "IDEA" "TODO" "LATER" "DOING" "|" "DONE" "CANCELED")
             (sequence "BACKLOG" "INPROGRESS" "ONHOLD" "INREVIEW" "|" "MERGED" "CANCELED")
@@ -340,6 +344,7 @@
     (citeproc-org-setup)
     (setq citeproc-org-org-bib-header "* References\n")
     )
+   (add-to-list 'org-hugo-special-block-type-properties '("sidenote" . (:trim-pre t :trim-post t)))
   (setq org-hugo-auto-set-lastmod 't
       org-hugo-section "posts"
       org-hugo-suppress-lastmod-period 43200.0
@@ -420,6 +425,18 @@
 (set-face-attribute 'mode-line nil :height 130)
 (set-face-attribute 'mode-line-inactive nil :height 130)
 
+
+;;;; Trees and navigation
+
+;; treemacs/projectile integration
+
+(use-package treemacs-projectile
+  :after (treemacs projectile))
+
+(after! (treemacs projectile)
+  (treemacs-project-follow-mode 1))
+
+;; dirvish
 (use-package! dirvish)
 ;;; Global beacon minor-mode
 ;;; Uncomment the following two lines to enable beacon
@@ -437,3 +454,11 @@
 
 ;; enable rainbow mode for lua
 (add-hook 'lua-mode-hook #'rainbow-mode)
+
+
+;;;; Extras
+
+;; elfeed-org
+
+(after! elfeed
+  (setq rmh-elfeed-org-files '("~/Sync/notes/pages/elfeed.org")))
