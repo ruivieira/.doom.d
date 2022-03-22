@@ -83,6 +83,10 @@
   :recipe (:host github :repo "emacs-vault/eglot-java"
            :files ("eglot-java.el")))
 
+;;;; Diagrams, plotting and graphs
+;; plantuml-mode
+(package! plantuml-mode)
+
 ;; tree-sitter support
 (package! tree-sitter)
 (package! tree-sitter-langs)
@@ -94,6 +98,9 @@
 (package! load-env-vars)
 
 ;; UI
+(package! mini-frame)
+(package! corfu)
+(package! orderless)
 (package! dirvish)
 ;;
 ;;
