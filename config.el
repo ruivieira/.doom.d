@@ -1,22 +1,9 @@
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 
-;; Place your private configuration here! Remember, you do not need to run 'doom
-;; sync' after modifying this file!
-
-
 ;; Some functionality uses this to identify you, e.g. GPG configuration, email
 ;; clients, file templates and snippets.
 (setq user-full-name "Rui Vieira"
       user-mail-address "ruidevieira@googlemail.com")
-
-;; Doom exposes five (optional) variables for controlling fonts in Doom. Here
-;; are the three important ones:
-;;
-;; + `doom-font'
-;; + `doom-variable-pitch-font'
-;; + `doom-big-font' -- used for `doom-big-font-mode'; use this for
-;;   presentations or streaming.
-;;
 
 ;; Only load GUI stuff when ... using a GUI
 (when window-system
@@ -28,7 +15,7 @@
   ;; There are two ways to load a theme. Both assume the theme is installed and
   ;; available. You can either set `doom-theme' or manually load a theme with the
   ;; `load-theme' function. This is the default:
-  ;; (setq doom-theme 'doom-one)
+  (setq doom-theme 'doom-one)
   ;; (setq doom-theme 'acme)
   ;; (setq doom-theme 'doom-sourcerer)
   ;; (setq doom-theme 'doom-flatwhite)
@@ -40,7 +27,9 @@
   ;; (require 'uwu-theme)
   ;; (load-theme 'uwu t)
   ;; (setq doom-theme 'spacemacs-light)
-  (setq doom-theme 'modus-operandi)
+  ;; (setq doom-theme 'modus-operandi)
+  (use-package! stimmung-themes)
+  ; (setq doom-theme 'stimmung-themes-light)
 )
 
 ;; tree-sitter
@@ -69,23 +58,6 @@
 
 (setq confirm-kill-emacs nil) ; Disable exit confirmation.
 
-;; Here are some additional functions/macros that could help you configure Doom:
-;;
-;; - `load!' for loading external *.el files relative to this one
-;; - `use-package!' for configuring packages
-;; - `after!' for running code after a package has loaded
-;; - `add-load-path!' for adding directories to the `load-path', relative to
-;;   this file. Emacs searches the `load-path' when you load packages with
-;;   `require' or `use-package'.
-;; - `map!' for binding new keys
-;;
-;; To get information about any of these functions/macros, move the cursor over
-;; the highlighted symbol at press 'K' (non-evil users must press 'C-c c k').
-;; This will open documentation for it, including demos of how they are used.
-;;
-;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
-;; they are implemented.
-
 ;; Uncomment to enable fullscreen start
 ;; (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 
@@ -93,7 +65,7 @@
   (setq org-agenda-files
       (flatten-list
        (mapcar #'(lambda (topic) (f-glob (format "~/Sync/notes/pages/%s/*.org" topic)))
-              '("." "AI" "Code" "Code projects" "JIRAs" "Life" "Machine learning" "Tools")))))
+              '("." "AI" "Code" "Code projects" "JIRAs" "k8s" "Life" "Machine learning" "Tools" "Emacs" "Productivity")))))
 
 ;; Python configuration
 (setq python-shell-completion-native-enable nil)
@@ -102,11 +74,26 @@
 ;; change `org-directory'. It must be set before org loads!
 ;; (setq org-directory "~/Sync/notes/pages/")
 
+;;;; Programming languages
+
+;; Python
+(use-package! virtualenvwrapper)
+(after! virtualenvwrapper
+(setq venv-location "~/.virtualenvs/")
+  )
+
+;; Typescript / Deno
+
+(add-hook 'typescript-mode-hook 'deno-fmt-mode)
+(add-hook 'js2-mode-hook 'deno-fmt-mode)
 
 (use-package scala-mode
   :mode "\\.s\\(cala\\|bt\\)$"
   :config
     (load! "lisp/ob-scala"))
+
+;; xonsh
+(use-package! xonsh-mode)
 
 ;; org-mode general configuration
 (when window-system
@@ -119,72 +106,87 @@
   (remove-hook 'org-mode-hook #'auto-fill-mode)
   ;; disable company too
   (setq company-global-modes '(not org-mode))
-      (setq org-todo-keywords
-            '((sequence "IDEA" "TODO" "LATER" "DOING" "|" "DONE" "CANCELED")
-            (sequence "BACKLOG" "INPROGRESS" "ONHOLD" "INREVIEW" "|" "MERGED" "CANCELED")
-            (sequence "WORK" "|" "DONE" "CANCELED")
-            (sequence "SHOP" "|" "DONE" "CANCELED")
-            (sequence "REVIEW" "|" "DONE" "CANCELED")
-            (sequence "MEETING" "|" "MET" "CANCELED")))
-      (setq org-agenda-custom-commands
-            '(("l" todo "LATER")
+  
+  ;; org-agenda customisation
+  (setq org-todo-keywords
+    '((sequence "IDEA" "TODO" "LATER" "DOING" "|" "DONE" "CANCELED")
+      (sequence "BACKLOG" "INPROGRESS" "ONHOLD" "INREVIEW" "|" "MERGED" "CANCELED")
+      (sequence "WORK" "|" "DONE" "CANCELED")
+      (sequence "SHOP" "|" "DONE" "CANCELED")
+      (sequence "REVIEW" "|" "DONE" "CANCELED")
+      (sequence "MEETING" "|" "MET" "CANCELED")))
 
-              ;; work commands
-              ("wo" "Open tickets" (
-                                    (org-ql-block '(and
-                                                    (property "type" "JIRA")
-                                                    (or (todo) (todo "LATER") (todo "WORK"))
-                                                    ))
-                                    ))
-              ("wa" "Agenda and work tasks" (
-                                             (agenda "")
-                                             (todo "BACKLOG") (todo "INPROGRESS")
-                                             (todo "WORK")
-                                             (todo "REVIEW")))
-              ("wh" "Work (on hold): agend and tasks" (
-                                                    (agenda "" ((todo "ONHOLD") (todo "INREVIEW")))
-                                                    (todo "ONHOLD") (todo "INREVIEW")))
-              ("wm" "Work: agenda and meetings" (
-                                              (agenda "" ((todo "MEETING")))
-                                              (todo "MEETING")))
-              ("ww" "Work tasks and meetings" (
-                                            (agenda "" ((org-agenda-span 14)
-                                                        (todo "MEETING")
-                                                        (todo "REVIEW")
-                                                        (todo "BACKLOG")
-                                                        (todo "WORK")
-                                                        (tags "+work")))
-                                    (todo "MEETING")
-                                    (todo "REVIEW")
-                                    (todo "BACKLOG")
-                                    (todo "WORK")
-                                    (tags "+work")))
+  (setq org-agenda-custom-commands
+
+    '(("l" todo "LATER")
+
+    ;; work commands
+    ("wo" "Open tickets" (
+      (org-ql-block '(and
+        (property "type" "JIRA")
+        (or (todo) (todo "LATER") (todo "WORK"))))))
+
+    ("wa" "Agenda and work tasks" (
+      (agenda "")
+      (todo "BACKLOG") (todo "INPROGRESS")
+      (todo "WORK")
+      (todo "REVIEW")))
+
+    ("wh" "Work (on hold): agend and tasks" (
+      (agenda "" ((todo "ONHOLD") (todo "INREVIEW")))
+      (todo "ONHOLD") (todo "INREVIEW")))
+
+    ("wm" "Work: agenda and meetings" (
+      (agenda "" ((todo "MEETING")))
+      (todo "MEETING")))
+
+    ("ww" "Work tasks and meetings" (
+      (agenda "" ((org-agenda-span 14)
+        (todo "MEETING") (todo "REVIEW") (todo "BACKLOG") (todo "WORK") (tags "+work")))
+      (todo "MEETING") (todo "REVIEW") (todo "BACKLOG") (todo "WORK") (tags "+work")))
+
     ("s" "Shopping: agenda and tasks" (
-                                       (agenda "" ((todo "SHOP")))
-                                       (todo "SHOP")))
+      (agenda "" ((todo "SHOP")))
+      (todo "SHOP")))
+
     ("n" "General: agenda and TODOs" (
-                             (agenda "" ((todo "TODO")))
-                             (todo "TODO")))
+      (agenda "" ((todo "TODO")))
+      (todo "TODO")))
+
     ("f" "Fortnight agenda and everything" (
-                                            (agenda "" ((org-agenda-span 14)))
-                                            (alltodo "")))
+      (agenda "" ((org-agenda-span 14)))
+      (alltodo "")))
+
     ))
-    (setq rui/org-agenda-directory "~/Sync/notes/pages/")
-    (setq org-capture-templates
-          `(("t" "todo" entry (file ,(concat rui/org-agenda-directory "Inbox.org"))
-          "* TODO  %?")
-         ("w" "work" entry (file ,(concat rui/org-agenda-directory "Inbox.org"))
-            "* WORK  %?")
-         ("e" "email" entry (file+headline ,(concat rui/org-agenda-directory "emails.org") "Emails")
-          "* TODO  [#A] Reply: %a :@home:@school:" :immediate-finish t)
-         ("l" "link" entry (file ,(concat rui/org-agenda-directory "Inbox.org"))
-          "* TODO %(org-cliplink-capture)" :immediate-finish t)
-         ("c" "org-protocol-capture" entry (file ,(concat rui/org-agenda-directory "Inbox.org"))
-          "* TODO [[%:link][%:description]]\n\n %i" :immediate-finish t)))
+
+  ;; Skip done items in the agenda
+  (setq org-agenda-skip-scheduled-if-done t)
+  (setq org-agenda-skip-deadline-if-done t)
+  
+  (setq rui/org-agenda-directory "~/Sync/notes/pages/")
+  
+  (setq org-capture-templates
+    `(("t" "todo" entry (file ,(concat rui/org-agenda-directory "Inbox.org"))
+      "* TODO  %?")
+
+    ("w" "work" entry (file ,(concat rui/org-agenda-directory "Inbox.org"))
+      "* WORK  %?")
+
+    ("e" "email" entry (file+headline ,(concat rui/org-agenda-directory "emails.org") "Emails")
+      "* TODO  [#A] Reply: %a :@home:@school:" :immediate-finish t)
+
+    ("l" "link" entry (file ,(concat rui/org-agenda-directory "Inbox.org"))
+      "* TODO %(org-cliplink-capture)" :immediate-finish t)
+
+    ("c" "org-protocol-capture" entry (file ,(concat rui/org-agenda-directory "Inbox.org"))
+      "* TODO [[%:link][%:description]]\n\n %i" :immediate-finish t)))
+ 
  (setq org-image-actual-width nil)
  (setq org-confirm-babel-evaluate nil)  ;; skip org-babel confirmation dialog
  (add-hook 'org-babel-after-execute-hook 'org-redisplay-inline-images)
  (setq org-preview-latex-default-process 'imagemagick)
+ 
+ ;; org-babel customisation
  (setq org-babel-clojure-backend 'cider) ;; set backend for org-babel clojure blocks
  (org-babel-do-load-languages
   'org-babel-load-languages
@@ -221,7 +223,9 @@
                 ((x-family-fonts "Sans Serif")    '(:family "Sans Serif"))
                 (nil (warn "Cannot find a Sans Serif Font.  Install Source Sans Pro."))))
          (base-font-color     (face-foreground 'default nil 'default))
-         (headline           `(:inherit default :weight bold :foreground ,base-font-color)))
+         ; (headline           `(:inherit default :weight bold :foreground ,base-font-color))
+         (headline           `(:inherit default :weight bold))
+         )
 
     (custom-theme-set-faces
      'user
@@ -263,17 +267,15 @@
   :config
   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
 
-;;(after! org-src
-;; (dolist (lang '(python typescript jupyter))
-;; (cl-pushnew (cons (format "jupyter-%s" lang) lang)
-;;                org-src-lang-modes :key #'car))
-  ;; (org-babel-jupyter-override-src-block "python") ;; alias all python to jupyter-python
+; (after! org-src
+; (dolist (lang '(python typescript jupyter))
+; (cl-pushnew (cons (format "jupyter-%s" lang) lang)
+               ; org-src-lang-modes :key #'car))
+  ; (org-babel-jupyter-override-src-block "python") ;; alias all python to jupyter-python
   ;; (org-babel-jupyter-override-src-block "typescript") ;; alias all python to jupyter-python
-;; )
+; )
 
-(add-hook 'typescript-mode-hook 'deno-fmt-mode)
-(add-hook 'js2-mode-hook 'deno-fmt-mode)
-;; (add-to-list 'org-src-lang-modes '("deno" . typescript))
+; (add-to-list 'org-src-lang-modes '("deno" . typescript))
 
 ;; Configure file templates
 (set-file-template! "/post\\.org$" :trigger "__post.org" :mode 'org-mode)
@@ -354,7 +356,7 @@
   (setq org-hugo-auto-set-lastmod 't
       org-hugo-section "posts"
       org-hugo-suppress-lastmod-period 43200.0
-      org-hugo-export-creator-string "Emacs 28.0 (Org mode 9.4 + ox-hugo)"
+      org-hugo-export-creator-string "Emacs 29.0.50 (Org mode 9.4 + ox-hugo)"
 ))
 
 ;; Special glyphs for org-babel blocks
@@ -432,14 +434,16 @@
 
 (use-package! mini-frame)
 (after! mini-frame
-  (mini-frame-mode 1)
-(custom-set-variables
- '(mini-frame-show-parameters
-   '((top . 20)
-     (width . 0.7)
-     (left . 0.5)))))
+  (if (eq system-type 'darwin)          ; enable only on macOS. Problematic in Linux.
+    (mini-frame-mode 1)
+    (custom-set-variables
+      '(mini-frame-show-parameters
+        '((top . 20)
+          (width . 0.7)
+          (left . 0.5))))
+))
 
-(use-package corfu
+;; (use-package corfu
   ;; Optional customizations
   ;; :custom
   ;; (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
@@ -460,33 +464,33 @@
 
   ;; Recommended: Enable Corfu globally.
   ;; This is recommended since dabbrev can be used globally (M-/).
-  :init
-  (corfu-global-mode))
+  ;; :init
+  ;; (corfu-global-mode))
 
 ;; Optionally use the `orderless' completion style. See `+orderless-dispatch'
 ;; in the Consult wiki for an advanced Orderless style dispatcher.
 ;; Enable `partial-completion' for files to allow path expansion.
 ;; You may prefer to use `initials' instead of `partial-completion'.
-(use-package orderless
+;; (use-package orderless
   :init
   ;; Configure a custom style dispatcher (see the Consult wiki)
   ;; (setq orderless-style-dispatchers '(+orderless-dispatch)
   ;;       orderless-component-separator #'orderless-escapable-split-on-space)
-  (setq completion-styles '(orderless)
-        completion-category-defaults nil
-        completion-category-overrides '((file (styles . (partial-completion))))))
+  ;;(setq completion-styles '(orderless)
+  ;;      completion-category-defaults nil
+  ;;      completion-category-overrides '((file (styles . (partial-completion))))))
 
 ;; Use dabbrev with Corfu!
-(use-package dabbrev
+;; (use-package dabbrev
   ;; Swap M-/ and C-M-/
-  :bind (("M-/" . dabbrev-completion)
-         ("C-M-/" . dabbrev-expand)))
+  ;; :bind (("M-/" . dabbrev-completion)
+  ;;       ("C-M-/" . dabbrev-expand)))
 
 ;; A few more useful configurations...
-(use-package emacs
-  :init
+;; (use-package emacs
+  ;; :init
   ;; TAB cycle if there are only few candidates
-  (setq completion-cycle-threshold 3)
+  ;; (setq completion-cycle-threshold 3)
 
   ;; Emacs 28: Hide commands in M-x which do not apply to the current mode.
   ;; Corfu commands are hidden, since they are not supposed to be used via M-x.
@@ -495,7 +499,7 @@
 
   ;; Enable indentation+completion using the TAB key.
   ;; `completion-at-point' is often bound to M-TAB.
-  (setq tab-always-indent 'complete))
+  ;; (setq tab-always-indent 'complete))
 
 ;;; Keybindings
 
@@ -533,6 +537,7 @@
 
 ;; System
 (use-package! load-env-vars)
+(setq pixel-scroll-precision-mode 1)
 
 ;; enable rainbow mode for lua
 (add-hook 'lua-mode-hook #'rainbow-mode)

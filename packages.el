@@ -29,6 +29,7 @@
 (package! ivy-bibtex)
 (package! org-ref)
 (package! citeproc-org)
+(package! stimmung-themes)
 ;; Extra Python packages
 (package! deno-fmt)
 
@@ -79,9 +80,17 @@
   :recipe (:host github :repo "ruivieira/elisp"
            :files ("kogito.el")))
 
+;;;; Programming languages
+
+;; Python
+(package! virtualenvwrapper)
+
 (package! eglot-java
   :recipe (:host github :repo "emacs-vault/eglot-java"
            :files ("eglot-java.el")))
+
+;; xonsh
+(package! xonsh-mode)
 
 ;;;; Diagrams, plotting and graphs
 ;; plantuml-mode
