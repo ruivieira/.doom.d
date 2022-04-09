@@ -2,36 +2,20 @@
 
 ;; Some functionality uses this to identify you, e.g. GPG configuration, email
 ;; clients, file templates and snippets.
+;;; Code:
 (setq user-full-name "Rui Vieira"
-      user-mail-address "ruidevieira@googlemail.com")
+      user-mail-address "rui@fastmail.org")
 
 ;; Only load GUI stuff when ... using a GUI
-(when window-system
   ;; They all accept either a font-spec, font string ("Input Mono-12"), or xlfd
   ;; font string. You generally only need these two:
-  (setq doom-font (font-spec :family "Hera" :size 15 :weight 'regular))
-  (setq doom-variable-pitch-font (font-spec :family "ETBembo" :size 17 :weight 'regular))
+(setq doom-font (font-spec :family "Fira Code" :size 13 :weight 'regular))
+;; (setq doom-variable-pitch-font (font-spec :family "ETBembo" :size 17 :weight 'regular))
 
   ;; There are two ways to load a theme. Both assume the theme is installed and
   ;; available. You can either set `doom-theme' or manually load a theme with the
   ;; `load-theme' function. This is the default:
-  (setq doom-theme 'doom-one)
-  ;; (setq doom-theme 'acme)
-  ;; (setq doom-theme 'doom-sourcerer)
-  ;; (setq doom-theme 'doom-flatwhite)
-  ;; (setq doom-theme 'doom-one-light)
-  ;; (setq doom-theme 'doom-solarized-light)
-  ;; (setq doom-theme 'doom-acario-dark)
-  ;; (setq doom-theme 'tango-plus)
-  ;; (setq doom-theme 'doom-Iosvkem)
-  ;; (require 'uwu-theme)
-  ;; (load-theme 'uwu t)
-  ;; (setq doom-theme 'spacemacs-light)
-  ;; (setq doom-theme 'modus-operandi)
-  (use-package! stimmung-themes)
-  ; (setq doom-theme 'stimmung-themes-light)
-)
-
+  (setq doom-theme 'modus-vivendi)
 ;; tree-sitter
 (use-package! tree-sitter
   :config
@@ -43,10 +27,10 @@
   ;(set-face-attribute 'solaire-fringe-face nil :background (face-background 'solaire-hl-line-face))
   (set-face-attribute 'fringe nil :background (face-background 'solaire-default-face)))
 
-(when window-system
+(when (window-system)
   (let ((alternatives
         ;; '("doom-emacs-color.png" "doom-emacs-color2.png" "doom-emacs-slant-out-bw.png" "doom-emacs-slant-out-color.png")
-        '("spock.jpg")
+        '("s3q51p65oqs81.jpg")
         ))
     (setq fancy-splash-image
           (concat doom-private-dir "splash/"
@@ -65,7 +49,8 @@
   (setq org-agenda-files
       (flatten-list
        (mapcar #'(lambda (topic) (f-glob (format "~/Sync/notes/pages/%s/*.org" topic)))
-              '("." "AI" "Code" "Code projects" "JIRAs" "k8s" "Life" "Machine learning" "Tools" "Emacs" "Productivity")))))
+              '("." "AI" "Code" "Code projects" "JIRAs" "k8s" "Life"
+                "Machine learning" "Tools" "Emacs" "Productivity" "Work")))))
 
 ;; Python configuration
 (setq python-shell-completion-native-enable nil)
@@ -95,10 +80,15 @@
 ;; xonsh
 (use-package! xonsh-mode)
 
+;; Fennel
+(use-package! fennel-mode)
+
+;; Janet
+(use-package! janet-mode)
+(use-package! ijanet)
+
 ;; org-mode general configuration
-(when window-system
-  (use-package org-modern)
-)
+(use-package! org-modern)
 
 (after! org
   (add-hook 'org-mode-hook #'org-modern-mode)
@@ -124,7 +114,7 @@
     ("wo" "Open tickets" (
       (org-ql-block '(and
         (property "type" "JIRA")
-        (or (todo) (todo "LATER") (todo "WORK"))))))
+        (or (todo) (todo "LATER") (todo "WORK") (todo "INPROGRESS") (todo "ONHOLD") (todo "INREVIEW"))))))
 
     ("wa" "Agenda and work tasks" (
       (agenda "")
@@ -152,6 +142,12 @@
     ("n" "General: agenda and TODOs" (
       (agenda "" ((todo "TODO")))
       (todo "TODO")))
+
+
+    ("x" "Focus (stand-up)" (
+      (org-ql-block '(and
+        (property "focus" "true")
+        (or (todo) (todo "LATER") (todo "WORK") (todo "INPROGRESS") (todo "ONHOLD") (todo "INREVIEW"))))))
 
     ("f" "Fortnight agenda and everything" (
       (agenda "" ((org-agenda-span 14)))
@@ -181,7 +177,11 @@
     ("c" "org-protocol-capture" entry (file ,(concat rui/org-agenda-directory "Inbox.org"))
       "* TODO [[%:link][%:description]]\n\n %i" :immediate-finish t)))
  
- (setq org-image-actual-width nil)
+ (when (window-system)
+  (setq org-image-actual-width 400)
+  (setq org-startup-with-inline-images t)
+ )
+ 
  (setq org-confirm-babel-evaluate nil)  ;; skip org-babel confirmation dialog
  (add-hook 'org-babel-after-execute-hook 'org-redisplay-inline-images)
  (setq org-preview-latex-default-process 'imagemagick)
@@ -210,63 +210,66 @@
  (use-package! org-ql)
 
  ;; org-mode styling
- (setq org-hide-emphasis-markers t)
- (font-lock-add-keywords 'org-mode
-                          '(("^ *\\([-]\\) "
-                             (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+ (when (window-system)
+  (setq org-hide-emphasis-markers t)
+  (font-lock-add-keywords 'org-mode
+                            '(("^ *\\([-]\\) "
+                              (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
 
-   (let* ((variable-tuple
-          (cond ((x-list-fonts "ETBembo")         '(:font "ETBembo"))
-                ((x-list-fonts "Source Sans Pro") '(:font "Source Sans Pro"))
-                ((x-list-fonts "Lucida Grande")   '(:font "Lucida Grande"))
-                ((x-list-fonts "Verdana")         '(:font "Verdana"))
-                ((x-family-fonts "Sans Serif")    '(:family "Sans Serif"))
-                (nil (warn "Cannot find a Sans Serif Font.  Install Source Sans Pro."))))
-         (base-font-color     (face-foreground 'default nil 'default))
-         ; (headline           `(:inherit default :weight bold :foreground ,base-font-color))
-         (headline           `(:inherit default :weight bold))
-         )
+    (let* ((variable-tuple
+            (cond ((x-list-fonts "ETBembo")         '(:font "ETBembo"))
+                  ((x-list-fonts "Source Sans Pro") '(:font "Source Sans Pro"))
+                  ((x-list-fonts "Lucida Grande")   '(:font "Lucida Grande"))
+                  ((x-list-fonts "Verdana")         '(:font "Verdana"))
+                  ((x-family-fonts "Sans Serif")    '(:family "Sans Serif"))
+                  (nil (warn "Cannot find a Sans Serif Font.  Install Source Sans Pro."))))
+          (base-font-color     (face-foreground 'default nil 'default))
+          ; (headline           `(:inherit default :weight bold :foreground ,base-font-color))
+          (headline           `(:inherit default :weight bold))
+          )
+
+      (custom-theme-set-faces
+      'user
+      `(org-level-8 ((t (,@headline ,@variable-tuple))))
+      `(org-level-7 ((t (,@headline ,@variable-tuple))))
+      `(org-level-6 ((t (,@headline ,@variable-tuple))))
+      `(org-level-5 ((t (,@headline ,@variable-tuple))))
+      `(org-level-4 ((t (,@headline ,@variable-tuple :height 1.05))))
+      `(org-level-3 ((t (,@headline ,@variable-tuple :height 1.1))))
+      `(org-level-2 ((t (,@headline ,@variable-tuple :height 1.15))))
+      `(org-level-1 ((t (,@headline ,@variable-tuple :height 1.2))))
+      `(org-document-title ((t (,@headline ,@variable-tuple :height 1.25 :underline nil))))))
+
+    (defvar font--height 150)
 
     (custom-theme-set-faces
-     'user
-     `(org-level-8 ((t (,@headline ,@variable-tuple))))
-     `(org-level-7 ((t (,@headline ,@variable-tuple))))
-     `(org-level-6 ((t (,@headline ,@variable-tuple))))
-     `(org-level-5 ((t (,@headline ,@variable-tuple))))
-     `(org-level-4 ((t (,@headline ,@variable-tuple :height 1.1))))
-     `(org-level-3 ((t (,@headline ,@variable-tuple :height 1.2))))
-     `(org-level-2 ((t (,@headline ,@variable-tuple :height 1.3))))
-     `(org-level-1 ((t (,@headline ,@variable-tuple :height 1.5))))
-     `(org-document-title ((t (,@headline ,@variable-tuple :height 1.5 :underline nil))))))
+      'user
+      '(variable-pitch ((t (:family "ETBembo" :height 160 :weight thin))))
+      '(fixed-pitch ((t ( :family "Fira Code" :height 160)))))
 
-   (custom-theme-set-faces
+    (add-hook 'org-mode-hook 'variable-pitch-mode)
+    (add-hook 'org-mode-hook 'visual-line-mode)
+    (custom-theme-set-faces
     'user
-    '(variable-pitch ((t (:family "ETBembo" :height 170 :weight thin))))
-    '(fixed-pitch ((t ( :family "Hack" :height 150)))))
-
-   (add-hook 'org-mode-hook 'variable-pitch-mode)
-   (add-hook 'org-mode-hook 'visual-line-mode)
-   (custom-theme-set-faces
-   'user
-   '(org-block ((t (:inherit fixed-pitch))))
-   '(org-code ((t (:inherit (shadow fixed-pitch)))))
-   '(org-document-info ((t (:foreground "dark orange"))))
-   '(org-document-info-keyword ((t (:inherit (shadow fixed-pitch)))))
-   '(org-indent ((t (:inherit (org-hide fixed-pitch)))))
-   '(org-link ((t (:foreground "royal blue" :underline t))))
-   '(org-meta-line ((t (:inherit (font-lock-comment-face fixed-pitch)))))
-   '(org-property-value ((t (:inherit fixed-pitch))) t)
-   '(org-special-keyword ((t (:inherit (font-lock-comment-face fixed-pitch)))))
-   '(org-table ((t (:inherit fixed-pitch :foreground "#83a598"))))
-   '(org-tag ((t (:inherit (shadow fixed-pitch) :weight bold :height 0.8))))
-   '(org-verbatim ((t (:inherit (shadow fixed-pitch))))))
+    '(org-block ((t (:inherit fixed-pitch))))
+    '(org-code ((t (:inherit (shadow fixed-pitch)))))
+    '(org-document-info ((t (:foreground "dark orange"))))
+    '(org-document-info-keyword ((t (:inherit (shadow fixed-pitch)))))
+    '(org-indent ((t (:inherit (org-hide fixed-pitch)))))
+    '(org-link ((t (:foreground "royal blue" :underline t))))
+    '(org-meta-line ((t (:inherit (font-lock-comment-face fixed-pitch)))))
+    '(org-property-value ((t (:inherit fixed-pitch))) t)
+    '(org-special-keyword ((t (:inherit (font-lock-comment-face fixed-pitch)))))
+    '(org-table ((t (:inherit fixed-pitch :foreground "#83a598"))))
+    '(org-tag ((t (:inherit (shadow fixed-pitch) :weight bold :height 0.8))))
+    '(org-verbatim ((t (:inherit (shadow fixed-pitch))))))
  )
 
 
-(use-package org-bullets
-  :config
-  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
-
+  (use-package org-bullets
+    :config
+    (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+)
 ; (after! org-src
 ; (dolist (lang '(python typescript jupyter))
 ; (cl-pushnew (cons (format "jupyter-%s" lang) lang)
@@ -379,10 +382,51 @@
 (add-hook 'org-mode-hook 'my/pretty-symbols)
 (global-prettify-symbols-mode +1)
 
+(use-package org-randomnote
+  :ensure t
+  :bind ("C-c r" . org-randomnote))
+
+; org-journal
+(use-package org-journal
+  :ensure t
+  :defer t
+  :init
+  ;; Change default prefix key; needs to be set before loading org-journal
+  (setq org-journal-prefix-key "C-c j ")
+  :config
+  (setq org-journal-dir "~/Sync/notes/journals/"
+        org-journal-date-format "%Y-%m-%d"
+        org-journal-file-format "%Y_%m_%d.org"
+        org-journal-file-type 'daily))
+
+; key bindings for org-journal
+(map! :leader
+      :desc "New journal entry"
+      "o j c" #'org-journal-open-current-journal-file)
+
+(map! :after org
+      :map org-mode-map
+      :localleader
+      "u r" #'org-randomnote)
+
+(map! :after org
+      :map org-mode-map
+      :localleader
+      "u a" #'org-archive-subtree-default)
+
+;;; IRC
+(use-package! circe
+  :config
+  (load (expand-file-name "~/.emacs-secrets.el")))
+
+(use-package! circe-color-nicks
+  :config
+  (enable-circe-color-nicks))
+
 ;; Diagrams, graphs and plots
 (use-package! plantuml-mode)
 (after! plantuml-mode
-    (setq plantuml-executable-path "/usr/local/bin/plantuml")
+    (setq plantuml-executable-path "/usr/bin/plantuml")
     (setq plantuml-default-exec-mode 'executable)
 )
 
@@ -427,22 +471,21 @@
 ;; UI-related configurations
 ;;
 ;;; The important stuff
-(blink-cursor-mode 1)                   ; A cursor should blink
-(scroll-bar-mode 1)
+(when (window-system)
+  (scroll-bar-mode 0)
+  (blink-cursor-mode 1)                 ; A cursor should blink
+)
 
 ;;; completion and navigation
-
 (use-package! mini-frame)
-(after! mini-frame
-  (if (eq system-type 'darwin)          ; enable only on macOS. Problematic in Linux.
-    (mini-frame-mode 1)
-    (custom-set-variables
-      '(mini-frame-show-parameters
-        '((top . 20)
-          (width . 0.7)
-          (left . 0.5))))
-))
-
+  (after! mini-frame
+    (if (eq system-type 'darwin)          ; enable only on macOS. Problematic in Linux.
+      (mini-frame-mode 1)
+      (custom-set-variables
+        '(mini-frame-show-parameters
+          '((top . 20)
+            (width . 0.7)
+            (left . 0.5))))))
 ;; (use-package corfu
   ;; Optional customizations
   ;; :custom
@@ -472,7 +515,7 @@
 ;; Enable `partial-completion' for files to allow path expansion.
 ;; You may prefer to use `initials' instead of `partial-completion'.
 ;; (use-package orderless
-  :init
+  ;; :init
   ;; Configure a custom style dispatcher (see the Consult wiki)
   ;; (setq orderless-style-dispatchers '(+orderless-dispatch)
   ;;       orderless-component-separator #'orderless-escapable-split-on-space)
@@ -507,6 +550,7 @@
 (global-set-key (kbd "M-3") '(lambda () (interactive) (insert "#")))
 
 ;; Make the modeline font smaller
+
 (setq doom-modeline-height 1)
 (set-face-attribute 'mode-line nil :height 130)
 (set-face-attribute 'mode-line-inactive nil :height 130)
@@ -530,14 +574,16 @@
 ;;(after! beacon (beacon-mode 1))
 
 ;;; Focus package
-(use-package! focus)
-
+(when (window-system)
+  (use-package! focus)
+)
 ;;; set default indent
 (setq-default tab-width 4)
 
 ;; System
 (use-package! load-env-vars)
-(setq pixel-scroll-precision-mode 1)
+(pixel-scroll-precision-mode 1)
+(use-package! bug-hunter)
 
 ;; enable rainbow mode for lua
 (add-hook 'lua-mode-hook #'rainbow-mode)
@@ -549,3 +595,44 @@
 
 (after! elfeed
   (setq rmh-elfeed-org-files '("~/Sync/notes/pages/elfeed.org")))
+
+;; mu4e
+ ; One of these two directories will be correct
+ (if (file-directory-p "/usr/share/emacs/site-lisp/mu4e/")
+     (setq mu4e-path "/usr/share/emacs/site-lisp/mu4e/")
+     (setq mu4e-path "/usr/local/share/emacs/site-lisp/mu/mu4e/"))
+
+(use-package! mu4e
+  :load-path mu4e-path
+  :config
+  ;; configure your package here
+
+(setq
+ mu4e-headers-skip-duplicates  t
+ mu4e-view-show-images t
+ mu4e-view-show-addresses t
+ mu4e-compose-format-flowed nil
+ mu4e-date-format "%y/%m/%d"
+ mu4e-headers-date-format "%Y/%m/%d"
+ mu4e-change-filenames-when-moving t
+ mu4e-attachments-dir "~/Downloads"
+
+ mu4e-maildir       "~/Maildir"   ;; top-level Maildir
+ ;; note that these folders below must start with /
+ ;; the paths are relative to maildir root
+ mu4e-refile-folder "/Archives"
+ mu4e-sent-folder   "/Sent"
+ mu4e-drafts-folder "/Drafts"
+ mu4e-trash-folder  "/Trash")
+
+;; this setting allows to re-sync and re-index mail
+;; by pressing U
+(setq mu4e-get-mail-command  "mbsync -a")
+(setq
+ smtpmail-smtp-server "smtp.fastmail.com"
+ smtpmail-smtp-service 465
+ smtpmail-stream-type 'ssl
+ message-send-mail-function   'smtpmail-send-it
+ smtpmail-default-smtp-server "smtp.fastmail.com"
+ smtpmail-auth-credentials "~/.authinfo")
+ )

@@ -17,11 +17,15 @@
 (package! tango-plus-theme)
 (package! uwu-theme :recipe (:host github :repo "kborling/uwu.el"))
 (package! spacemacs-theme)
+(package! gruber-darker-theme)
+(package! solo-jazz-theme)
 ;; general org-mode packages
 (package! org-super-agenda)
 (package! org-sidebar)
 (package! org-ql)
 (package! org-modern)
+(package! org-randomnote)
+(package! org-journal)
 ;; org-babel packages
 (package! ob-deno)
 (package! ob-go)
@@ -88,9 +92,25 @@
 (package! eglot-java
   :recipe (:host github :repo "emacs-vault/eglot-java"
            :files ("eglot-java.el")))
+;; Fennel
+(package! fennel-mode
+  :recipe (:host github :repo "emacs-vault/fennel-mode"
+           :files ("*.el")))
+
+(package! janet-mode
+  :recipe (:host github :repo "emacs-vault/janet-mode"
+           :files ("*.el")))
+(package! ijanet-mode
+  :recipe (:host github :repo "emacs-vault/ijanet-mode"
+           :files ("*.el")))
 
 ;; xonsh
 (package! xonsh-mode)
+
+;;;; IRC
+
+;; circe
+(package! circe)
 
 ;;;; Diagrams, plotting and graphs
 ;; plantuml-mode
@@ -105,6 +125,7 @@
 
 ;; system
 (package! load-env-vars)
+(package! bug-hunter)
 
 ;; UI
 (package! mini-frame)
